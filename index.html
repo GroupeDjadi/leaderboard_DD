@@ -105,6 +105,7 @@
                 min-height: 100vh;
                 padding: 20px 0;
                 overflow-y: auto;
+                justify-content: flex-start;
             }
             
             .mobile-slide {
@@ -334,6 +335,8 @@
                 img.style.margin = '0 auto';
                 img.style.display = 'block';
                 
+                slide.appendChild(img);
+                
                 if (logoData.title) {
                     const title = document.createElement('h2');
                     title.className = 'mobile-logo-title';
@@ -341,7 +344,6 @@
                     slide.appendChild(title);
                 }
                 
-                slide.insertBefore(img, slide.firstChild);
                 return slide;
             } else {
                 const slide = document.createElement('div');
@@ -417,13 +419,13 @@
                 // First show all logos
                 COMPANY_LOGOS.forEach(logo => {
                     const slide = createLogoSlide(logo);
-                    container.appendChild(slide);
+                    showSlide(slide);
                 });
                 
-                // Then show all images
+                // Then show all images from the sheet
                 imageUrls.forEach(url => {
                     const slide = createImageSlide(url);
-                    container.appendChild(slide);
+                    showSlide(slide);
                 });
             } else {
                 // For desktop, do the slideshow as before
