@@ -24,7 +24,6 @@
             align-items: center;
         }
         
-        /* Desktop slides styles */
         .slide {
             position: absolute;
             width: 100%;
@@ -64,21 +63,21 @@
         
         .logo-container {
             text-align: center;
-            padding: 40px;
+            padding: 20px;
             animation: float 6s ease-in-out infinite;
         }
         
         .logo-img {
-            max-width: 60%;
-            max-height: 60vh;
+            max-width: 90%;
+            max-height: 70vh;
             filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
             transition: transform 0.5s ease;
         }
         
         .logo-title {
-            margin-top: 30px;
+            margin-top: 20px;
             color: #2c3e50;
-            font-size: 2.5rem;
+            font-size: 1.5rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -89,65 +88,12 @@
         
         .logo-subtitle {
             color: #7f8c8d;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 300;
-            margin-top: 15px;
+            margin-top: 10px;
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 1s ease-out 1s forwards;
-        }
-        
-        /* Mobile-specific styles */
-        @media only screen and (max-width: 768px) and (orientation: portrait) {
-            #image-container {
-                flex-direction: column;
-                height: auto;
-                min-height: 100vh;
-                padding: 20px 0;
-                overflow-y: auto;
-                justify-content: flex-start;
-            }
-            
-            .mobile-slide {
-                width: 90%;
-                margin: 15px auto;
-                border-radius: 10px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                overflow: hidden;
-                opacity: 1 !important;
-                transform: none !important;
-                position: relative;
-            }
-            
-            .mobile-slide img {
-                width: 100%;
-                height: auto;
-                display: block;
-            }
-            
-            .mobile-logo-slide {
-                background: linear-gradient(135deg, #ffffff 0%, #e6f0ff 100%);
-                padding: 30px 20px;
-                text-align: center;
-                margin: 20px auto;
-            }
-            
-            .mobile-logo-slide img {
-                max-width: 80%;
-                margin: 0 auto;
-            }
-            
-            .mobile-logo-title {
-                color: #2c3e50;
-                font-size: 1.8rem;
-                font-weight: 600;
-                margin-top: 20px;
-            }
-            
-            /* Hide desktop slides on mobile */
-            .slide {
-                display: none !important;
-            }
         }
         
         .loading {
@@ -176,7 +122,7 @@
                 transform: translateY(0);
             }
             50% {
-                transform: translateY(-20px);
+                transform: translateY(-10px);
             }
         }
         
@@ -199,6 +145,24 @@
             background-size: 1000px 100%;
             animation: shimmer 2s infinite;
             z-index: 2;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .logo-container {
+                padding: 10px;
+            }
+            .logo-img {
+                max-width: 95%;
+                max-height: 60vh;
+            }
+            .logo-title {
+                font-size: 1.2rem;
+                margin-top: 15px;
+            }
+            .logo-subtitle {
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
@@ -238,10 +202,6 @@
         let currentIndex = 0;
         let imageUrls = [];
         let slideshowActive = true;
-        
-        function isMobilePortrait() {
-            return window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
-        }
         
         function convertDriveUrl(shareUrl) {
             if (shareUrl.includes('lh3.googleusercontent.com')) {
@@ -284,125 +244,76 @@
         }
         
         function createImageSlide(url) {
-            if (isMobilePortrait()) {
-                const slide = document.createElement('div');
-                slide.className = 'mobile-slide';
-                
-                const img = document.createElement('img');
-                img.src = convertDriveUrl(url);
-                img.style.width = '100%';
-                
-                img.onload = function() {
-                    console.log(`Image loaded: ${img.naturalWidth}x${img.naturalHeight}`);
-                };
-                
-                img.onerror = function() {
-                    slide.innerHTML = `<div class="error">Image failed to load</div>`;
-                };
-                
-                slide.appendChild(img);
-                return slide;
-            } else {
-                const slide = document.createElement('div');
-                slide.className = 'slide';
-                
-                const img = document.createElement('img');
-                img.id = 'current-image';
-                img.src = convertDriveUrl(url);
-                
-                img.onload = function() {
-                    console.log(`Image loaded: ${img.naturalWidth}x${img.naturalHeight}`);
-                };
-                
-                img.onerror = function() {
-                    slide.innerHTML = `<div class="error">Image failed to load</div>`;
-                };
-                
-                slide.appendChild(img);
-                return slide;
-            }
+            const slide = document.createElement('div');
+            slide.className = 'slide';
+            
+            const img = document.createElement('img');
+            img.id = 'current-image';
+            img.src = convertDriveUrl(url);
+            
+            img.onload = function() {
+                console.log(`Image loaded: ${img.naturalWidth}x${img.naturalHeight}`);
+            };
+            
+            img.onerror = function() {
+                slide.innerHTML = `<div class="error">Image failed to load</div>`;
+            };
+            
+            slide.appendChild(img);
+            return slide;
         }
         
         function createLogoSlide(logoData) {
-            if (isMobilePortrait()) {
-                const slide = document.createElement('div');
-                slide.className = 'mobile-slide mobile-logo-slide';
-                
-                const img = document.createElement('img');
-                img.src = logoData.url;
-                img.alt = logoData.title;
-                img.style.maxWidth = '80%';
-                img.style.margin = '0 auto';
-                img.style.display = 'block';
-                
-                slide.appendChild(img);
-                
-                if (logoData.title) {
-                    const title = document.createElement('h2');
-                    title.className = 'mobile-logo-title';
-                    title.textContent = logoData.title;
-                    slide.appendChild(title);
-                }
-                
-                return slide;
-            } else {
-                const slide = document.createElement('div');
-                slide.className = 'slide logo-slide';
-                
-                const container = document.createElement('div');
-                container.className = 'logo-container';
-                
-                const img = document.createElement('img');
-                img.className = 'logo-img';
-                img.src = logoData.url;
-                img.alt = logoData.title;
-                
-                const title = document.createElement('h1');
-                title.className = 'logo-title';
-                title.textContent = logoData.title;
-                
-                const subtitle = document.createElement('p');
-                subtitle.className = 'logo-subtitle';
-                subtitle.textContent = logoData.subtitle;
-                
-                container.appendChild(img);
-                container.appendChild(title);
-                container.appendChild(subtitle);
-                slide.appendChild(container);
-                
-                const shimmer = document.createElement('div');
-                shimmer.className = 'shimmer';
-                slide.appendChild(shimmer);
-                
-                return slide;
-            }
+            const slide = document.createElement('div');
+            slide.className = 'slide logo-slide';
+            
+            const container = document.createElement('div');
+            container.className = 'logo-container';
+            
+            const img = document.createElement('img');
+            img.className = 'logo-img';
+            img.src = logoData.url;
+            img.alt = logoData.title;
+            
+            const title = document.createElement('h1');
+            title.className = 'logo-title';
+            title.textContent = logoData.title;
+            
+            const subtitle = document.createElement('p');
+            subtitle.className = 'logo-subtitle';
+            subtitle.textContent = logoData.subtitle;
+            
+            container.appendChild(img);
+            if (logoData.title) container.appendChild(title);
+            if (logoData.subtitle) container.appendChild(subtitle);
+            slide.appendChild(container);
+            
+            const shimmer = document.createElement('div');
+            shimmer.className = 'shimmer';
+            slide.appendChild(shimmer);
+            
+            return slide;
         }
         
         function showSlide(slide) {
             const container = document.getElementById('image-container');
             
-            if (isMobilePortrait()) {
-                // For mobile, just append the slide (we'll show all slides stacked)
-                container.appendChild(slide);
-            } else {
-                // For desktop, do the transition effect
-                const currentActive = container.querySelector('.slide.active');
-                if (currentActive) {
-                    currentActive.classList.remove('active');
-                    currentActive.classList.add('fade-out');
-                    
-                    setTimeout(() => {
-                        currentActive.remove();
-                    }, 1500);
-                }
-                
-                container.innerHTML = '';
-                container.appendChild(slide);
+            const currentActive = container.querySelector('.slide.active');
+            if (currentActive) {
+                currentActive.classList.remove('active');
+                currentActive.classList.add('fade-out');
                 
                 setTimeout(() => {
-                    slide.classList.add('active');
-                }, 50);
+                    currentActive.remove();
+                }, 1500);
             }
+            
+            container.innerHTML = '';
+            container.appendChild(slide);
+            
+            setTimeout(() => {
+                slide.classList.add('active');
+            }, 50);
         }
         
         async function startSlideshow() {
@@ -411,55 +322,33 @@
             
             imageUrls = urls;
             
-            if (isMobilePortrait()) {
-                // For mobile portrait, show all slides stacked vertically
-                const container = document.getElementById('image-container');
-                container.innerHTML = '';
+            function nextSlide() {
+                if (!slideshowActive) return;
                 
-                // First show all logos
-                COMPANY_LOGOS.forEach(logo => {
-                    const slide = createLogoSlide(logo);
+                if (currentIndex % 2 === 0) {
+                    const imageIdx = (currentIndex / 2) % imageUrls.length;
+                    const slide = createImageSlide(imageUrls[imageIdx]);
                     showSlide(slide);
-                });
-                
-                // Then show all images from the sheet
-                imageUrls.forEach(url => {
-                    const slide = createImageSlide(url);
+                    setTimeout(nextSlide, IMAGE_DURATION);
+                } else {
+                    const logoIdx = Math.floor(currentIndex / 2) % COMPANY_LOGOS.length;
+                    const slide = createLogoSlide(COMPANY_LOGOS[logoIdx]);
                     showSlide(slide);
-                });
-            } else {
-                // For desktop, do the slideshow as before
-                function nextSlide() {
-                    if (!slideshowActive) return;
-                    
-                    if (currentIndex % 2 === 0) {
-                        const imageIdx = (currentIndex / 2) % imageUrls.length;
-                        const slide = createImageSlide(imageUrls[imageIdx]);
-                        showSlide(slide);
-                        setTimeout(nextSlide, IMAGE_DURATION);
-                    } else {
-                        const logoIdx = Math.floor(currentIndex / 2) % COMPANY_LOGOS.length;
-                        const slide = createLogoSlide(COMPANY_LOGOS[logoIdx]);
-                        showSlide(slide);
-                        setTimeout(nextSlide, LOGO_DURATION);
-                    }
-                    
-                    currentIndex++;
+                    setTimeout(nextSlide, LOGO_DURATION);
                 }
                 
-                nextSlide();
+                currentIndex++;
             }
+            
+            nextSlide();
         }
         
         document.addEventListener('DOMContentLoaded', () => {
-            if (!isMobilePortrait()) {
-                enterFullscreen();
-            }
             startSlideshow();
         });
         
         function enterFullscreen() {
-            if (!document.fullscreenElement && !isMobilePortrait()) {
+            if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {
                     console.error('Fullscreen error:', err);
                 });
@@ -468,13 +357,6 @@
         
         document.addEventListener('click', enterFullscreen);
         window.addEventListener('load', enterFullscreen);
-        
-        window.addEventListener('resize', () => {
-            
-            if (isMobilePortrait()) {
-                
-            }
-        });
     </script>
 </body>
 </html>
